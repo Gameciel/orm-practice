@@ -42,4 +42,36 @@ module.exports = {
 			response.status(400).send(err);
 		}
 	},
+	updateUserByID: async (request, response) => {
+		await User.findAll({
+			where: {
+				id: request.params.id,
+			},
+		}).then(async result => {
+			if (result) {
+				await User.update({ ...request.body }, { where: { id } })
+					.then(updateResult => {
+						response.status(200).send(updateResult);
+					})
+					.catch(updateError => {
+						response.status(400).send(updateError);
+					});
+			} else {
+				response.status(404).send("Not Found");
+			}
+		});
+	},
+	deleteUserByID: async (request, response) => {
+		await User.destroy({
+			where: {
+				id: request.params.id,
+			},
+		})
+			.then(result => {
+				response.status(200).send(result);
+			})
+			.catch(error => {
+				response.status(404).send(error);
+			});
+	},
 };
